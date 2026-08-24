@@ -81,6 +81,7 @@
             text-decoration: none;
             transition: all 0.2s ease-in-out;
             box-shadow: 0 4px 14px rgba(114, 137, 218, 0.4);
+            margin-bottom: 12px;
         }
 
         .btn-download:hover {
@@ -89,13 +90,37 @@
             box-shadow: 0 6px 20px rgba(114, 137, 218, 0.6);
         }
 
+        /* Botão de Instalação Direta (Oculto até o navegador permitir) */
+        #btnInstalar {
+            display: none;
+            width: 100%;
+            max-width: 320px;
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 auto 12px auto;
+            box-shadow: 0 4px 14px rgba(40, 167, 69, 0.4);
+            transition: all 0.2s ease-in-out;
+        }
+
+        #btnInstalar:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+        }
+
         .device-info {
             margin-top: 16px;
             font-size: 13px;
             color: #7c7c8a;
         }
 
-        /* Caixa de Aviso Ajustada para Segundo Plano */
+        /* Caixa de Aviso sobre Segundo Plano (Android) */
         .android-tip {
             display: none;
             margin-top: 24px;
@@ -142,16 +167,21 @@
         <h1>Baixar Nerimity</h1>
         <p>Conecte-se com suas comunidades e amigos de forma rápida e segura em qualquer dispositivo, direto pelo navegador ou aplicativo.</p>
 
-        <!-- Botão Universal -->
-        <a href="https://nerimity.com/app" target="_blank" rel="noopener noreferrer" class="btn-download" id="downloadBtn">
-            Acessar / Baixar App
+        <!-- Botão de Acesso Web Normal -->
+        <a href="https://nerimity.com/app" target="_blank" rel="noopener noreferrer" class="btn-download">
+            Acessar Nerimity Web
         </a>
+
+        <!-- Botão de Instalação Direta (Aparece quando o navegador suportar) -->
+        <button id="btnInstalar">
+            📲 Instalar Aplicativo
+        </button>
 
         <div class="device-info" id="deviceInfo">
             Detectando seu dispositivo...
         </div>
 
-        <!-- Alerta específico para Android sobre Troca de Apps / Segundo Plano -->
+        <!-- Alerta específico para Android sobre Segundo Plano -->
         <div class="android-tip" id="androidTip">
             <strong>⚠️ Dica para não cair a chamada ao trocar de app:</strong>
             Se a chamada cair quando você minimizar ou abrir outro aplicativo, segure o ícone do atalho na tela inicial, clique em <b>Informações do App</b> (ou Configurações), vá em <b>Uso de Bateria</b> e selecione <b>"Sem restrição"</b> ou permita o <b>uso em segundo plano livre</b>. Isso impede que o Android feche o app ao rodar outras coisas!
@@ -163,23 +193,70 @@
     </footer>
 
     <script>
+        // 1. Identificação do Dispositivo
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const deviceInfoEl = document.getElementById('deviceInfo');
-        const downloadBtn = document.getElementById('downloadBtn');
         const androidTip = document.getElementById('androidTip');
 
         if (/android/i.test(userAgent)) {
-            deviceInfoEl.textContent = "Dispositivo Android detectado. Pronto para abrir o app!";
-            downloadBtn.innerHTML = "📱 Abrir / Instalar no Android";
+            deviceInfoEl.textContent = "Dispositivo Android detectado. Pronto para instalar!";
             androidTip.style.display = "block";
         } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
             deviceInfoEl.textContent = "Dispositivo iOS detectado. Compatível com Safari!";
-            downloadBtn.innerHTML = "🍏 Abrir no iOS (Adicionar à Tela)";
         } else {
             deviceInfoEl.textContent = "Computador detectado. Experiência completa otimizada!";
-            downloadBtn.innerHTML = "💻 Abrir Versão Web / Desktop";
         }
+
+        // 2. Injeção dinâmica do manifesto para habilitar a instalação
+        const manifestData = {
+            "name": "Nerimity",
+            "short_name": "Nerimity",
+            "start_url": "https://nerimity.com/app",
+            "display": "standalone",
+            "background_color": "#121214",
+            "theme_color": "#7289da",
+            "icons": [
+                {
+                    "src": "https://nerimity.com/assets/logo.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        };
+
+        const stringifiedManifest = JSON.stringify(manifestData);
+        const blob = new Blob([stringifiedManifest], {type: 'application/json'});
+        const manifestURL = URL.createObjectURL(blob);
+        
+        const manifestTag = document.createElement('link');
+        manifestTag.rel = 'manifest';
+        manifestTag.href = manifestURL;
+        document.head.appendChild(manifestTag);
+
+        // 3. Controle do botão de instalação direta
+        let deferredPrompt;
+        const btnInstalar = document.getElementById('btnInstalar');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            // Mostra o botão de instalar diretamente
+            btnInstalar.style.display = 'inline-flex';
+        });
+
+        btnInstalar.addEventListener('click', () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        btnInstalar.style.display = 'none';
+                    }
+                    deferredPrompt = null;
+                });
+            }
+        });
     </script>
 
 </body>
 </html>
+ 

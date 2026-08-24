@@ -66,30 +66,6 @@
             line-height: 1.5;
         }
 
-        .btn-download {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            max-width: 320px;
-            background-color: #7289da;
-            color: #ffffff;
-            font-size: 16px;
-            font-weight: 600;
-            padding: 16px 24px;
-            border-radius: 12px;
-            text-decoration: none;
-            transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 14px rgba(114, 137, 218, 0.4);
-            margin-bottom: 12px;
-        }
-
-        .btn-download:hover {
-            background-color: #5b73c7;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(114, 137, 218, 0.6);
-        }
-
         /* Botão de Instalação Direta (Oculto até o navegador permitir) */
         #btnInstalar {
             display: none;
@@ -112,6 +88,24 @@
             background: #218838;
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+        }
+
+        /* Mensagem alternativa caso o navegador não suporte o prompt automático */
+        #manualFallback {
+            font-size: 14px;
+            color: #a8a8b3;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        #manualFallback a {
+            color: #7289da;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        #manualFallback a:hover {
+            text-decoration: underline;
         }
 
         .device-info {
@@ -165,17 +159,17 @@
         <img src="https://nerimity.com/assets/logo.png" alt="Logo Nerimity" class="logo">
         
         <h1>Baixar Nerimity</h1>
-        <p>Conecte-se com suas comunidades e amigos de forma rápida e segura em qualquer dispositivo, direto pelo navegador ou aplicativo.</p>
-
-        <!-- Botão de Acesso Web Normal -->
-        <a href="https://nerimity.com/app" target="_blank" rel="noopener noreferrer" class="btn-download">
-            Acessar Nerimity Web
-        </a>
+        <p>Instale o aplicativo oficial do Nerimity no seu dispositivo para ter acesso direto às suas comunidades e chamadas.</p>
 
         <!-- Botão de Instalação Direta (Aparece quando o navegador suportar) -->
         <button id="btnInstalar">
             📲 Instalar Aplicativo
         </button>
+
+        <!-- Fallback caso o navegador bloqueie o prompt automático (comum em alguns celulares/iOS) -->
+        <div id="manualFallback">
+            Para instalar manualmente, abra o menu do seu navegador e selecione <b>"Adicionar à tela inicial"</b> ou <b>"Instalar aplicativo"</b>.
+        </div>
 
         <div class="device-info" id="deviceInfo">
             Detectando seu dispositivo...
@@ -202,12 +196,12 @@
             deviceInfoEl.textContent = "Dispositivo Android detectado. Pronto para instalar!";
             androidTip.style.display = "block";
         } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            deviceInfoEl.textContent = "Dispositivo iOS detectado. Compatível com Safari!";
+            deviceInfoEl.textContent = "Dispositivo iOS detectado. Use o menu do Safari para adicionar à tela!";
         } else {
-            deviceInfoEl.textContent = "Computador detectado. Experiência completa otimizada!";
+            deviceInfoEl.textContent = "Computador detectado. Pronto para instalar!";
         }
 
-        // 2. Injeção dinâmica do manifesto para habilitar a instalação
+        // 2. Injeção dinâmica do manifesto apontando para o link correto
         const manifestData = {
             "name": "Nerimity",
             "short_name": "Nerimity",
@@ -259,4 +253,3 @@
 
 </body>
 </html>
- 

@@ -62,7 +62,7 @@
         p {
             font-size: 16px;
             color: #a8a8b3;
-            margin-bottom: 32px;
+            margin-bottom: 24px;
             line-height: 1.5;
         }
 
@@ -89,14 +89,31 @@
             box-shadow: 0 6px 20px rgba(114, 137, 218, 0.6);
         }
 
-        .btn-download:active {
-            transform: translateY(0);
-        }
-
         .device-info {
-            margin-top: 20px;
+            margin-top: 16px;
             font-size: 13px;
             color: #7c7c8a;
+        }
+
+        /* Caixa de Aviso para Android */
+        .android-tip {
+            display: none;
+            margin-top: 24px;
+            background: #25252b;
+            border-left: 4px solid #fba94c;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 13px;
+            color: #c4c4cc;
+            line-height: 1.5;
+        }
+
+        .android-tip strong {
+            color: #fba94c;
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
         }
 
         footer {
@@ -133,6 +150,12 @@
         <div class="device-info" id="deviceInfo">
             Detectando seu dispositivo...
         </div>
+
+        <!-- Alerta específico para Android evitar queda de chamadas -->
+        <div class="android-tip" id="androidTip">
+            <strong>⚠️ Dica importante para Chamadas no Android:</strong>
+            Após adicionar este atalho na sua tela inicial, abra-o, vá nas <b>Configurações do seu Android > Aplicativos</b>, procure pelo seu navegador (ou pelo app instalado), clique em <b>Bateria</b> e mude para <b>"Sem restrição"</b> ou <b>"Não otimizar"</b>. Isso impede que o celular feche a chamada quando a tela apagar!
+        </div>
     </div>
 
     <footer>
@@ -140,14 +163,16 @@
     </footer>
 
     <script>
-        // Script simples para adaptar o texto do botão conforme o dispositivo do usuário
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         const deviceInfoEl = document.getElementById('deviceInfo');
         const downloadBtn = document.getElementById('downloadBtn');
+        const androidTip = document.getElementById('androidTip');
 
         if (/android/i.test(userAgent)) {
             deviceInfoEl.textContent = "Dispositivo Android detectado. Pronto para abrir o app!";
             downloadBtn.innerHTML = "📱 Abrir / Instalar no Android";
+            // Exibe a dica exclusiva para usuários de Android
+            androidTip.style.display = "block";
         } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
             deviceInfoEl.textContent = "Dispositivo iOS detectado. Compatível com Safari!";
             downloadBtn.innerHTML = "🍏 Abrir no iOS (Adicionar à Tela)";

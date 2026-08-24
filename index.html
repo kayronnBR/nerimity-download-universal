@@ -95,7 +95,7 @@
             color: #7c7c8a;
         }
 
-        /* Caixa de Aviso para Android */
+        /* Caixa de Aviso Ajustada para Segundo Plano */
         .android-tip {
             display: none;
             margin-top: 24px;
@@ -151,10 +151,10 @@
             Detectando seu dispositivo...
         </div>
 
-        <!-- Alerta específico para Android evitar queda de chamadas -->
+        <!-- Alerta específico para Android sobre Troca de Apps / Segundo Plano -->
         <div class="android-tip" id="androidTip">
-            <strong>⚠️ Dica importante para Chamadas no Android:</strong>
-            Após adicionar este atalho na sua tela inicial, abra-o, vá nas <b>Configurações do seu Android > Aplicativos</b>, procure pelo seu navegador (ou pelo app instalado), clique em <b>Bateria</b> e mude para <b>"Sem restrição"</b> ou <b>"Não otimizar"</b>. Isso impede que o celular feche a chamada quando a tela apagar!
+            <strong>⚠️ Dica para não cair a chamada ao trocar de app:</strong>
+            Se a chamada cair quando você minimizar ou abrir outro aplicativo, segure o ícone do atalho na tela inicial, clique em <b>Informações do App</b> (ou Configurações), vá em <b>Uso de Bateria</b> e selecione <b>"Sem restrição"</b> ou permita o <b>uso em segundo plano livre</b>. Isso impede que o Android feche o app ao rodar outras coisas!
         </div>
     </div>
 
@@ -171,7 +171,6 @@
         if (/android/i.test(userAgent)) {
             deviceInfoEl.textContent = "Dispositivo Android detectado. Pronto para abrir o app!";
             downloadBtn.innerHTML = "📱 Abrir / Instalar no Android";
-            // Exibe a dica exclusiva para usuários de Android
             androidTip.style.display = "block";
         } else if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
             deviceInfoEl.textContent = "Dispositivo iOS detectado. Compatível com Safari!";
